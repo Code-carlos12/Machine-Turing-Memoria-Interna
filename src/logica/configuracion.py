@@ -29,7 +29,6 @@ class Configuracion:
         transicion_aplicada: Transicion que condujo a este paso, o None en paso 0.
         transicion_pendiente: Transicion proxima a ejecutarse, o None si fin.
         motivo_detencion: Razon de parada (Aceptada, Rechazada, Detenida), o None.
-        observacion: Breve descripcion de la operacion semantica realizada.
     """
 
     paso: int
@@ -41,7 +40,6 @@ class Configuracion:
     transicion_aplicada: "TransicionMemoria | None" = field(default=None)
     transicion_pendiente: "TransicionMemoria | None" = field(default=None)
     motivo_detencion: str | None = field(default=None)
-    observacion: str = field(default="")
 
     def __post_init__(self) -> None:
         if isinstance(self.cinta, dict):

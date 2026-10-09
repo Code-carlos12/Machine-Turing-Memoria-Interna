@@ -1,0 +1,10 @@
+
+q0, a, e -> q1, a, R, a
+
+q0, b, e -> q1, b, R, bf  
+
+q1, a, a -> q2, a, R, e
+
+q1, b, b -> q2, b, R, e
+
+q2, B, e -> qf, B, R, e

@@ -106,45 +106,8 @@ class MaquinaTuringMemoria:
                     transicion_aplicada=ultima.transicion_aplicada,
                     transicion_pendiente=None,
                     motivo_detencion=self.RESULTADO_DETENIDA,
-                    observacion="Ejecucion interrumpida manualmente por el usuario",
                 )
                 self.historial.append(cfg_detenida)
-
-    def _generar_observacion(
-        self,
-        t_aplicada: TransicionMemoria | None,
-        t_pendiente: TransicionMemoria | None,
-        motivo: str | None,
-    ) -> str:
-        """Genera una breve explicacion de la operacion semantica realizada."""
-        if motivo == self.RESULTADO_ACEPTADA:
-            return "Lee B con todo emparejado: ACEPTA (qf)"
-        if self.estado_ejecucion == "RECHAZADA":
-            return motivo or "Transicion no definida: RECHAZA"
-        if t_aplicada is None:
-            return "Configuracion inicial"
-
-        # Reglas semánticas para el autómata de a^n b^n
-        if t_aplicada.estado_origen == "q0" and t_aplicada.simbolo_leido == "a":
-            return "Marca 'a' con 'X' y carga memoria (m = a)"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "a" and t_aplicada.memoria_origen == "a":
-            return "Salta 'a'; sigue buscando 'b' con memoria cargada"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "Y" and t_aplicada.memoria_origen == "a":
-            return "Pasa sobre marca 'Y' buscando 'b'"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "b" and t_aplicada.memoria_origen == "a":
-            return "Pareja encontrada: escribe 'Y' y vacia memoria (m = ε)"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "a" and t_aplicada.memoria_origen == MEMORIA_VACIA:
-            return "Retrocede hacia la izquierda sobre 'a'"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "Y" and t_aplicada.memoria_origen == MEMORIA_VACIA:
-            return "Retrocede hacia la izquierda sobre 'Y'"
-        if t_aplicada.estado_origen == "q1" and t_aplicada.simbolo_leido == "X" and t_aplicada.memoria_origen == MEMORIA_VACIA:
-            return "Encuentra ultima 'X' y reinicia ciclo en q0"
-        if t_aplicada.estado_origen == "q0" and t_aplicada.simbolo_leido == "Y":
-            return "Lee 'Y': ya no quedan 'a'; inicia fase de verificacion"
-        if t_aplicada.estado_origen == "q2" and t_aplicada.simbolo_leido == "Y":
-            return "Verifica marcas 'Y' hacia la derecha"
-
-        return f"Aplica: {t_aplicada.formato_accion()}"
 
     def _registrar_configuracion(self) -> None:
         if self.cinta is None:
@@ -174,8 +137,6 @@ class MaquinaTuringMemoria:
                 f"simbolo '{simbolo}' y memoria '{self.memoria_actual}'."
             )
 
-        obs = self._generar_observacion(self.ultima_transicion, pendiente, motivo)
-
         cfg = Configuracion(
             paso=self.paso_actual,
             estado=self.estado_actual,
@@ -186,6 +147,5 @@ class MaquinaTuringMemoria:
             transicion_aplicada=self.ultima_transicion,
             transicion_pendiente=pendiente,
             motivo_detencion=motivo,
-            observacion=obs,
         )
         self.historial.append(cfg)

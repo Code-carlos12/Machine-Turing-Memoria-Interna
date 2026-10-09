@@ -205,7 +205,7 @@ class SimuladorMemoriaApp:
         frame_historial = ttk.LabelFrame(self.panel_fila2, text="Historial de Descripciones Instantaneas y Acciones")
         self.panel_fila2.add(frame_historial, weight=1)
 
-        columnas_hist = ("Paso", "Estado", "Memoria", "Cinta", "Accion", "Observacion")
+        columnas_hist = ("Paso", "Estado", "Memoria", "Cinta", "Accion")
         self.tree_historial = ttk.Treeview(frame_historial, columns=columnas_hist, show="headings")
 
         self.tree_historial.heading("Paso", text="Paso")
@@ -213,14 +213,12 @@ class SimuladorMemoriaApp:
         self.tree_historial.heading("Memoria", text="Memoria")
         self.tree_historial.heading("Cinta", text="Cinta")
         self.tree_historial.heading("Accion", text="Accion")
-        self.tree_historial.heading("Observacion", text="Observacion")
 
-        self.tree_historial.column("Paso", width=55, anchor=tk.CENTER, stretch=False)
-        self.tree_historial.column("Estado", width=65, anchor=tk.CENTER, stretch=False)
-        self.tree_historial.column("Memoria", width=70, anchor=tk.CENTER, stretch=False)
-        self.tree_historial.column("Cinta", width=120, anchor=tk.W, stretch=False)
-        self.tree_historial.column("Accion", width=220, anchor=tk.W, stretch=False)
-        self.tree_historial.column("Observacion", width=280, anchor=tk.W, stretch=True)
+        self.tree_historial.column("Paso", width=60, anchor=tk.CENTER, stretch=False)
+        self.tree_historial.column("Estado", width=75, anchor=tk.CENTER, stretch=False)
+        self.tree_historial.column("Memoria", width=80, anchor=tk.CENTER, stretch=False)
+        self.tree_historial.column("Cinta", width=140, anchor=tk.W, stretch=False)
+        self.tree_historial.column("Accion", width=300, anchor=tk.W, stretch=True)
 
         scroll_h_y = ttk.Scrollbar(frame_historial, orient=tk.VERTICAL, command=self.tree_historial.yview)
         self.tree_historial.configure(yscrollcommand=scroll_h_y.set)
@@ -270,7 +268,6 @@ class SimuladorMemoriaApp:
             transicion_aplicada=None,
             transicion_pendiente=None,
             motivo_detencion=None,
-            observacion="Vista previa",
         )
         self._dibujar_cinta_visual(cfg_temp)
         self._actualizar_botones()
@@ -494,7 +491,6 @@ class SimuladorMemoriaApp:
                     cfg.memoria,
                     cinta_dest,
                     accion,
-                    cfg.observacion,
                 ),
                 tags=(tag,),
             )
@@ -664,8 +660,8 @@ class SimuladorMemoriaApp:
                 f.write(f"Cadena Evaluada: {cadena}\n")
                 f.write(f"Resultado Final: {self.motor.estado_ejecucion}\n")
                 f.write("========================================================================================\n\n")
-                f.write(f"{'Paso':<6}{'Estado':<8}{'Memoria':<10}{'Cinta':<18}{'Pos':<6}{'Accion':<35}{'Observacion'}\n")
-                f.write("-" * 115 + "\n")
+                f.write(f"{'Paso':<6}{'Estado':<8}{'Memoria':<10}{'Cinta':<18}{'Pos':<6}{'Accion'}\n")
+                f.write("-" * 75 + "\n")
 
                 for cfg in self.motor.historial:
                     cinta_dest = cfg.representacion_cinta_destacada()
@@ -675,10 +671,10 @@ class SimuladorMemoriaApp:
                         else (cfg.transicion_pendiente.formato_accion() if cfg.transicion_pendiente else "-")
                     )
                     f.write(
-                        f"{cfg.paso:<6}{cfg.estado:<8}{cfg.memoria:<10}{cinta_dest:<18}{cfg.posicion_cabezal:<6}{accion:<35}{cfg.observacion}\n"
+                        f"{cfg.paso:<6}{cfg.estado:<8}{cfg.memoria:<10}{cinta_dest:<18}{cfg.posicion_cabezal:<6}{accion}\n"
                     )
 
-                f.write("-" * 115 + "\n")
+                f.write("-" * 75 + "\n")
                 f.write(f"ESTADO FINAL: {self.motor.estado_ejecucion} en {len(self.motor.historial) - 1} pasos.\n")
 
             messagebox.showinfo("Exportacion Exitosa", f"Historial guardado exitosamente en:\n{ruta}")

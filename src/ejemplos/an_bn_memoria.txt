@@ -1,56 +1,20 @@
-# ==============================================================================
-# REGLAS DE TRANSICION - MAQUINA DE TURING CON MEMORIA INTERNA FINITA
-# Lenguaje reconocido: L = { a^n b^n | n >= 1 }
-#
-# Formato:
-# estado_actual, simbolo_leido, memoria_actual -> estado_sig, simbolo_escrito, mov, memoria_sig
-# Donde:
-#   - Movimiento: 'R' (Derecha) o 'L' (Izquierda)
-#   - Memoria vacia: 'e' o 'ε'
-#   - Blanco de cinta: 'B'
-# ==============================================================================
 
-# ------------------------------------------------------------------------------
-# Fase 1: Estado q0 - Seleccionar siguiente 'a' o iniciar verificacion
-# ------------------------------------------------------------------------------
-# Marca la primera 'a' con 'X', avanza a la derecha y carga la memoria (m = a)
 q0, a, e -> q1, X, R, a
 
-# Al encontrar 'Y' desde q0 significa que ya no quedan 'a' sin procesar
 q0, Y, e -> q2, Y, R, e
 
-
-# ------------------------------------------------------------------------------
-# Fase 2: Estado q1 con memoria m = a - Exploracion y busqueda de 'b'
-# ------------------------------------------------------------------------------
-# Salta sobre 'a' rezagadas manteniendo m = a
 q1, a, a -> q1, a, R, a
 
-# Salta sobre marcas 'Y' intermedias manteniendo m = a
 q1, Y, a -> q1, Y, R, a
 
-# Encuentra la 'b' correspondiente: escribe 'Y', retrocede y vacia memoria (m = e)
 q1, b, a -> q1, Y, L, e
 
-
-# ------------------------------------------------------------------------------
-# Fase 3: Estado q1 con memoria m = e - Retroceso hacia la ultima 'X'
-# ------------------------------------------------------------------------------
-# Retrocede a la izquierda sobre 'a' con memoria vacia
 q1, a, e -> q1, a, L, e
 
-# Retrocede a la izquierda sobre 'Y' con memoria vacia
 q1, Y, e -> q1, Y, L, e
 
-# Encuentra la marca 'X' previa: avanza un paso y reinicia ciclo en q0
 q1, X, e -> q0, X, R, e
 
-
-# ------------------------------------------------------------------------------
-# Fase 4: Estado q2 - Verificacion de que no sobren simbolos
-# ------------------------------------------------------------------------------
-# Recorre a la derecha verificando que solo existan marcas 'Y'
 q2, Y, e -> q2, Y, R, e
 
-# Llega al blanco final 'B' con todo emparejado: Aceptacion formal (qf)
 q2, B, e -> qf, B, R, e
